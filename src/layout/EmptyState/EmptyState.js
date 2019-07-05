@@ -22,7 +22,7 @@ class EmptyState extends Component {
     const { classes } = this.props;
 
     // Properties
-    const { icon, title, description, button } = this.props;
+    const { icon, title, description, button, dialog } = this.props;
 
     return (
       <div className={classes.center}>
@@ -30,6 +30,7 @@ class EmptyState extends Component {
         {title && <Typography color="textSecondary" variant="h4">{title}</Typography>}
         {description && <Typography color="textSecondary" variant="subtitle1">{description}</Typography>}
         {button}
+        {dialog}
       </div>
     );
   }
@@ -41,7 +42,8 @@ EmptyState.propTypes = {
   icon: PropTypes.element,
   title: PropTypes.string,
   description: PropTypes.string,
-  button: PropTypes.element
+  button: PropTypes.element,
+  dialog: PropTypes.element
 };
 
 export default withStyles(styles)(EmptyState);

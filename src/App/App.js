@@ -10,6 +10,8 @@ import validate from 'validate.js';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/performance';
+import 'firebase/database';
+
 
 import readingTime from 'reading-time';
 
@@ -40,7 +42,9 @@ import SettingsDialog from '../dialogs/SettingsDialog/SettingsDialog';
 import InputDialog from '../dialogs/InputDialog/InputDialog';
 import ConfirmationDialog from '../dialogs/ConfirmationDialog/ConfirmationDialog';
 
-firebase.initializeApp(settings.credentials.firebase);
+const firebaseApp = firebase.initializeApp(settings.credentials.firebase);
+global.firebaseRef = firebaseApp.database().ref().child('trunks');
+
 
 const auth = firebase.auth();
 
@@ -136,7 +140,8 @@ class App extends Component {
         autoHideDuration: 0,
         message: '',
         open: false
-      }
+      },
+
     };
   }
 
