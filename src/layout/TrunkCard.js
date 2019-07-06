@@ -37,19 +37,8 @@ const styles = {
     fontSize: 14,
   },
   statusDropdown: {
-    margin: 0,
-    alignSelf: 'flex-start'
+    
   },
-  red: {
-    backgroundColor: '#d61821'
-  },
-  green: {
-    backgroundColor: '#78BE20'
-  },
-  orange: {
-      backgroundColor: '#FF7F32'
-  }
-
 };
 
 class TrunkCard extends Component {
@@ -72,6 +61,23 @@ class TrunkCard extends Component {
             }
         );
     }
+
+    getColorFromStatus(status) {
+        switch(status) {
+          case 0:
+            //red
+            return {backgroundColor: '#cf0628'}
+          case 1:
+            //orange
+            return {backgroundColor: '#FF7F32'}
+          case 2:
+            //green
+            return {backgroundColor: '#78BE20'}
+          default:
+            return null;
+        }
+      }
+      
   render() {
     // Styling
     const { classes } = this.props;
@@ -83,9 +89,7 @@ class TrunkCard extends Component {
         <Card className={classes.card} key={key}>
         <CardHeader
             avatar={
-                <Avatar aria-label="statusIcon" 
-                    className={trunk.status == "0" ? classes["red"] : classes["green"]}>
-                </Avatar>
+                <Avatar aria-label="statusIcon" style={this.getColorFromStatus(trunk.status)}></Avatar>
             }
             action={
                 <IconButton aria-label="Remove" onClick={console.log('clicked')}>

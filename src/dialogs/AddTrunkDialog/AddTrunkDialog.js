@@ -28,16 +28,20 @@ class AddTrunkDialog extends Component {
     
     addTrunk = event => {
         global.firebaseRef = global.firebaseApp.database().ref().child('trunks')
-        global.firebaseRef.push({ name: this.state.name, status: 0 }); 
+        global.firebaseRef.push({ name: this.capitalize(this.state.name), status: 0 }); 
         this.setState(initialState);
         this.props.onTrunkAdded();
     };
+
+    capitalize(str){
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 
 
 
   render() {
     // Properties
-    const { open, onClose, onAddTrunk} = this.props;
+    const { open, onClose} = this.props;
     var { name } = this.state;
 
     return (
@@ -52,7 +56,7 @@ class AddTrunkDialog extends Component {
                     type="text"
                     fullWidth
                     onChange={this.onChangeName}
-                    value={name}
+                    value={this.capitalize(name)}
                 />
                 </DialogContent>
                 <DialogActions>
@@ -71,7 +75,6 @@ class AddTrunkDialog extends Component {
 AddTrunkDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onAddTrunk: PropTypes.func,
 };
 
 export default AddTrunkDialog;
