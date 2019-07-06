@@ -42,8 +42,7 @@ import SettingsDialog from '../dialogs/SettingsDialog/SettingsDialog';
 import InputDialog from '../dialogs/InputDialog/InputDialog';
 import ConfirmationDialog from '../dialogs/ConfirmationDialog/ConfirmationDialog';
 
-const firebaseApp = firebase.initializeApp(settings.credentials.firebase);
-global.firebaseRef = firebaseApp.database().ref().child('trunks');
+global.firebaseApp = firebase.initializeApp(settings.credentials.firebase);
 
 
 const auth = firebase.auth();
@@ -141,9 +140,10 @@ class App extends Component {
         message: '',
         open: false
       },
-
     };
   }
+
+
 
   signUp = (emailAddress, password, passwordConfirmation) => {
     if (this.state.isSignedIn) {
@@ -1035,6 +1035,8 @@ class App extends Component {
     });
   };
 
+
+
   render() {
     const {
       primaryColor,
@@ -1639,9 +1641,10 @@ class App extends Component {
     );
   }
 
+
+
   componentDidMount() {
     this._isMounted = true;
-
     const theme = JSON.parse(localStorage.getItem('theme'));
 
     if (theme) {
@@ -1655,6 +1658,8 @@ class App extends Component {
           isSignedIn: !!user,
           user
         });
+
+
       }
     });
   }

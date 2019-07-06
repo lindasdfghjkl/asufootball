@@ -17,8 +17,15 @@ import deepOrange from '@material-ui/core/colors/deepOrange';
 import brown from '@material-ui/core/colors/brown';
 import gray from '@material-ui/core/colors/grey';
 import blueGray from '@material-ui/core/colors/blueGrey';
+import maroon from '@material-ui/core/colors/maroon';
+
 
 const colors = [
+  {
+    id: 'maroon',
+    name: 'Maroon',
+    import: maroon
+  },
   {
     id: 'red',
     name: 'Red',
