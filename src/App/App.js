@@ -140,9 +140,38 @@ class App extends Component {
         message: '',
         open: false
       },
+      trunks: []
     };
+
+    this.trunksRef = this.getRef().child('trunks').orderByChild('name');
   }
 
+  getRef() {
+    return global.firebaseApp.database().ref();
+  }
+  listentoDB(db) {
+    db.on('value', (snap) => {
+      var list = [];
+
+      snap.forEach((child) => {
+          list.push({
+              key: child.key,
+              name: child.val().name,
+              status: child.val().status,
+          });
+      });
+
+      if (list.length < 1) {
+        this.setState({
+          trunks: []
+        });
+      } else {
+        this.setState({
+          trunks: list
+        });
+      }
+    });
+  }
 
 
   signUp = (emailAddress, password, passwordConfirmation) => {
@@ -1068,6 +1097,9 @@ class App extends Component {
 
     const { snackbar } = this.state;
 
+
+    var routeComponents = this.state.trunks.map((trunk, key) => <Route key={key} path={"/" + trunk.key} render={() => (<h2>{trunk.name}</h2>)} />);
+    console.log(routeComponents)
     return (
       <Router>
         <MuiThemeProvider theme={theme}>
@@ -1094,8 +1126,13 @@ class App extends Component {
                 />
 
                 <Switch>
-                  <Route path="/" exact render={() => (<HomeContent isSignedIn={isSignedIn} title={settings.title} />)} />
+                  <Route path="/" exact render={() => (<HomeContent isSignedIn={isSignedIn} title={settings.title}/>) } />
+                  {routeComponents}
                   <Route component={NotFoundContent} />
+                  )
+
+                  <Route path="/" render={() => (<h2>hello</h2>)}/>
+
                 </Switch>
 
                 {isSignedIn &&
@@ -1658,10 +1695,10 @@ class App extends Component {
           isSignedIn: !!user,
           user
         });
-
-
       }
     });
+
+    this.listentoDB(this.trunksRef);
   }
 
   componentWillUnmount() {

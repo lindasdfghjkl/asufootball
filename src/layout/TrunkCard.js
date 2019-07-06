@@ -30,6 +30,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import QRCode from 'qrcode.react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
 
 
 const styles = {
@@ -169,7 +171,7 @@ class TrunkCard extends Component {
                     </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" className={classes.floatRight}>Edit Items</Button>
+                <Link className={classes.floatRight} to={"/" + trunk.key}>Edit Items</Link>
                 {/* <Button
                   className={clsx(classes.expand, {
                     [classes.expandOpen]: this.state.expanded,
