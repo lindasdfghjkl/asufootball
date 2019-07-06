@@ -41,7 +41,7 @@ TrunksView.propTypes = {
   classes: PropTypes.object.isRequired,
   addButton: PropTypes.element,
   dialog: PropTypes.element,
-  cards: PropTypes.element
+  cards: PropTypes.array
 };
 
 export default withStyles(styles)(TrunksView);
