@@ -21,14 +21,14 @@ import Select from '@material-ui/core/Select';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
-
+import Avatar from '@material-ui/core/Avatar';
 
 
 const styles = {
   card: {
     width: '20%',
     height: '25%',
-    margin: '2.5%'
+    margin: '2.5%',
   },
   floatRight: {
     marginLeft: 'auto',
@@ -36,6 +36,20 @@ const styles = {
   status: {
     fontSize: 14,
   },
+  statusDropdown: {
+    margin: 0,
+    alignSelf: 'flex-start'
+  },
+  red: {
+    backgroundColor: '#d61821'
+  },
+  green: {
+    backgroundColor: '#78BE20'
+  },
+  orange: {
+      backgroundColor: '#FF7F32'
+  }
+
 };
 
 class TrunkCard extends Component {
@@ -68,34 +82,39 @@ class TrunkCard extends Component {
     return (
         <Card className={classes.card} key={key}>
         <CardHeader
-          action={
-            <IconButton aria-label="Remove" onClick={console.log('clicked')}>
-              <CloseIcon />
-            </IconButton>
-          }
-          // title={name}
-          // subheader="September 14, 2016"
-        />
-        <CardContent>
-                <FormControl className={classes.formControl}>
+            avatar={
+                <Avatar aria-label="statusIcon" 
+                    className={trunk.status == "0" ? classes["red"] : classes["green"]}>
+                </Avatar>
+            }
+            action={
+                <IconButton aria-label="Remove" onClick={console.log('clicked')}>
+                <CloseIcon />
+                </IconButton>
+            }
+            title={
+            <FormControl>
                     <Select
                         value={trunk.status}
                         onChange={this.updateTrunkStatus}
                         displayEmpty
                         name="status"
-                        className={classes.selectEmpty}
+                        className={classes.statusDropdown}
                         >
-                      <MenuItem value={0}>Not Loaded</MenuItem>
-                      <MenuItem value={1}>Loading</MenuItem>
-                      <MenuItem value={2}>Loaded</MenuItem>
-                    </Select>
-                </FormControl>
+                        <MenuItem value={0}>Not Loaded</MenuItem>
+                        <MenuItem value={1}>Loading</MenuItem>
+                        <MenuItem value={2}>Loaded</MenuItem>
+                    </Select >
+             </FormControl>
+           }
+          // subheader="September 14, 2016"
+        />
+        <CardContent>
                 <Typography variant="h5" component="h2">
                   {trunk.name}
                 </Typography>
         </CardContent>
         <CardActions>
-            <Button size="small" className={classes.floatRight}>Edit Items</Button>
             <Button size="small" className={classes.floatRight}>Edit Items</Button>
         </CardActions>
         </Card>
