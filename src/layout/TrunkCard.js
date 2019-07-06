@@ -22,6 +22,12 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+
 
 
 const styles = {
@@ -42,14 +48,28 @@ const styles = {
 };
 
 class TrunkCard extends Component {
-
     updateTrunkStatus = (event) => {  
         var postData = this.props.trunk;
         postData.status = event.target.value;
         
-
         var updates = {};
         updates['trunks/' + postData.key] = postData;
+
+        global.firebaseApp.database().ref().update(updates, 
+            function(error) {
+                if (error) {
+                    console.log(error)
+                } else {
+                    console.log("Success")
+                }
+            }
+        );
+    }
+
+    removeTrunk = (event) => {  
+        var postData = this.props.trunk;
+        var updates = {};
+        updates['trunks/' + postData.key] = null;
 
         global.firebaseApp.database().ref().update(updates, 
             function(error) {
@@ -77,50 +97,51 @@ class TrunkCard extends Component {
             return null;
         }
       }
+
       
   render() {
     // Styling
     const { classes } = this.props;
 
     // Properties
-    const { trunk, key} = this.props;
+    const { trunk, key, alertOpen, handleCloseAlert, handleOpenAlert, handleRemoveTrunk} = this.props;
 
     return (
         <Card className={classes.card} key={key}>
-        <CardHeader
-            avatar={
-                <Avatar aria-label="statusIcon" style={this.getColorFromStatus(trunk.status)}></Avatar>
+            <CardHeader
+                avatar={
+                    <Avatar aria-label="statusIcon" style={this.getColorFromStatus(trunk.status)}></Avatar>
+                }
+                action={
+                    <IconButton aria-label="Remove" onClick={this.removeTrunk}>
+                        <CloseIcon />
+                    </IconButton>
+                }
+                title={
+                <FormControl>
+                        <Select
+                            value={trunk.status}
+                            onChange={this.updateTrunkStatus}
+                            displayEmpty
+                            name="status"
+                            className={classes.statusDropdown}
+                            >
+                            <MenuItem value={0}>Not Loaded</MenuItem>
+                            <MenuItem value={1}>Loading</MenuItem>
+                            <MenuItem value={2}>Loaded</MenuItem>
+                        </Select >
+                </FormControl>
             }
-            action={
-                <IconButton aria-label="Remove" onClick={console.log('clicked')}>
-                <CloseIcon />
-                </IconButton>
-            }
-            title={
-            <FormControl>
-                    <Select
-                        value={trunk.status}
-                        onChange={this.updateTrunkStatus}
-                        displayEmpty
-                        name="status"
-                        className={classes.statusDropdown}
-                        >
-                        <MenuItem value={0}>Not Loaded</MenuItem>
-                        <MenuItem value={1}>Loading</MenuItem>
-                        <MenuItem value={2}>Loaded</MenuItem>
-                    </Select >
-             </FormControl>
-           }
-          // subheader="September 14, 2016"
-        />
-        <CardContent>
-                <Typography variant="h5" component="h2">
-                  {trunk.name}
-                </Typography>
-        </CardContent>
-        <CardActions>
-            <Button size="small" className={classes.floatRight}>Edit Items</Button>
-        </CardActions>
+            // subheader="September 14, 2016"
+            />
+            <CardContent>
+                    <Typography variant="h5" component="h2">
+                    {trunk.name}
+                    </Typography>
+            </CardContent>
+            <CardActions>
+                <Button size="small" className={classes.floatRight}>Edit Items</Button>
+            </CardActions>
         </Card>
     );
   }
@@ -130,6 +151,10 @@ TrunkCard.propTypes = {
   classes: PropTypes.object.isRequired,
   trunk: PropTypes.object,
   key: PropTypes.string,
+  alertOpen: PropTypes.bool,
+  handleOpenAlert: PropTypes.func,
+  handleCloseAlert: PropTypes.func,
+  handleRemoveTrunk: PropTypes.func
 };
 
 export default withStyles(styles)(TrunkCard);
