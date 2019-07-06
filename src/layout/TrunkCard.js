@@ -9,7 +9,8 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-
+import Collapse from '@material-ui/core/Collapse';
+import clsx from 'clsx';
 import Input from '@material-ui/core/Input';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import FilledInput from '@material-ui/core/FilledInput';
@@ -27,7 +28,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
-
+import QRCode from 'qrcode.react';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 const styles = {
@@ -45,9 +47,25 @@ const styles = {
   statusDropdown: {
     
   },
+  expand: {
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
 };
 
 class TrunkCard extends Component {
+
+    constructor(props) {
+      super(props)
+      this.state = {
+        expanded: false
+      }
+      this.handleExpandClick = this.handleExpandClick.bind(this)
+    }
+  
     updateTrunkStatus = (event) => {  
         var postData = this.props.trunk;
         postData.status = event.target.value;
@@ -99,12 +117,23 @@ class TrunkCard extends Component {
       }
 
       
+  
+
+
+      handleExpandClick() {
+        this.setState({expanded: !this.state.expanded})
+      }
+
   render() {
     // Styling
     const { classes } = this.props;
 
     // Properties
-    const { trunk, key, alertOpen, handleCloseAlert, handleOpenAlert, handleRemoveTrunk} = this.props;
+    const {trunk, key} = this.props;
+
+    var {expanded} = this.state.expanded;
+
+
 
     return (
         <Card className={classes.card} key={key}>
@@ -141,7 +170,22 @@ class TrunkCard extends Component {
             </CardContent>
             <CardActions>
                 <Button size="small" className={classes.floatRight}>Edit Items</Button>
+                {/* <Button
+                  className={clsx(classes.expand, {
+                    [classes.expandOpen]: this.state.expanded,
+                  })}
+                  onClick={this.handleExpandClick}
+                  aria-expanded={this.state.expanded}
+                  aria-label="Show more"
+                  >
+                  <ExpandMoreIcon />
+                </Button> */}
             </CardActions>
+            {/* <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+              <CardContent>
+                  <QRCode value={trunk.name} renderAs='svg'/>
+              </CardContent>
+            </Collapse> */}
         </Card>
     );
   }
@@ -154,7 +198,7 @@ TrunkCard.propTypes = {
   alertOpen: PropTypes.bool,
   handleOpenAlert: PropTypes.func,
   handleCloseAlert: PropTypes.func,
-  handleRemoveTrunk: PropTypes.func
+  handleRemoveTrunk: PropTypes.func,
 };
 
 export default withStyles(styles)(TrunkCard);
