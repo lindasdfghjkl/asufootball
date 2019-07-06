@@ -92,6 +92,7 @@ class HomeContent extends Component {
           list.push({
               key: child.key,
               name: child.val().name,
+              items: child.val().items,
               status: child.val().status,
           });
       });

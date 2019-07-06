@@ -1,7 +1,5 @@
 /* eslint-disable no-unused-vars */
-
 import red from '@material-ui/core/colors/red';
-import maroon from '@material-ui/core/colors/maroon';
 import pink from '@material-ui/core/colors/pink';
 import purple from '@material-ui/core/colors/purple';
 import deepPurple from '@material-ui/core/colors/deepPurple';
@@ -21,6 +19,8 @@ import brown from '@material-ui/core/colors/brown';
 import gray from '@material-ui/core/colors/grey';
 import blueGray from '@material-ui/core/colors/blueGrey';
 
+
+
 /* eslint-enable no-unused-vars */
 
 const settings = {
@@ -29,13 +29,13 @@ const settings = {
   theme: {
     primaryColor: {
       name: 'maroon',
-      import: maroon
+      import:  {main: pink[900]}
     },
     secondaryColor: {
       name: 'yellow',
       import: yellow
     },
-    type: 'light'
+    type: 'dalightrk'
   },
 
   credentials: {

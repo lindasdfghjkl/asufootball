@@ -32,6 +32,7 @@ import LaunchScreen from '../layout/LaunchScreen/LaunchScreen';
 import Bar from '../layout/Bar/Bar';
 
 import HomeContent from '../content/HomeContent/HomeContent';
+import TrunkContent from '../content/TrunkContent';
 import NotFoundContent from '../content/NotFoundContent/NotFoundContent';
 
 import SignUpDialog from '../dialogs/SignUpDialog/SignUpDialog';
@@ -157,6 +158,7 @@ class App extends Component {
           list.push({
               key: child.key,
               name: child.val().name,
+              items: child.val().items,
               status: child.val().status,
           });
       });
@@ -1097,9 +1099,8 @@ class App extends Component {
 
     const { snackbar } = this.state;
 
+    var routeComponents = this.state.trunks.map((trunk, key) => <Route key={key} path={"/" + trunk.key} render={() => (<TrunkContent isSignedIn={isSignedIn} trunk={trunk}></TrunkContent>)} />);
 
-    var routeComponents = this.state.trunks.map((trunk, key) => <Route key={key} path={"/" + trunk.key} render={() => (<h2>{trunk.name}</h2>)} />);
-    console.log(routeComponents)
     return (
       <Router>
         <MuiThemeProvider theme={theme}>
