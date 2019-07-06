@@ -41,11 +41,18 @@ class TrunkContent extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      items: []
-    };
+    this.state = { rows: [] };
+
   }
 
+  componentDidMount() {
+    var rows = this.props.trunk.items.map(function (item) {
+      return {id: item.name, item: item.name, quantity: item.quantity}
+    });
+    this.setState({rows: rows});
+    this.onGridRowsUpdated = this.onGridRowsUpdated.bind(this)
+
+  }
 
 
   addItem = (event) => {  
@@ -69,24 +76,37 @@ class TrunkContent extends Component {
     );
   }
 
+  onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
+    this.setState(state => {
+      const rows = state.rows.slice();
+      for (let i = fromRow; i <= toRow; i++) {
+        rows[i] = { ...rows[i], ...updated };
+      }
 
-//   updateTrunkStatus = (event) => {  
-//     var postData = this.props.trunk;
-//     postData.status = event.target.value;
-    
-//     var updates = {};
-//     updates['trunks/' + postData.key] = postData;
+      var updatedItems = rows.map(function (row) {
+        return {name: row.item, quantity: row.quantity}
+      });
+      var postData = this.props.trunk;
+      postData.items =  updatedItems;
+      var updates = {};
+      updates['trunks/' + postData.key] = postData;
+      global.firebaseApp.database().ref().update(updates, 
+          function(error) {
+              if (error) {
+                  console.log(error)
+              } else {
+                  console.log("Success")
+              }
+          }
+      );
 
-//     global.firebaseApp.database().ref().update(updates, 
-//         function(error) {
-//             if (error) {
-//                 console.log(error)
-//             } else {
-//                 console.log("Success")
-//             }
-//         }
-//     );
-// }
+
+      return { rows };
+    });
+
+ 
+  };
+
 
   render() {
     // Styling
@@ -98,32 +118,22 @@ class TrunkContent extends Component {
     
     const columns = [
     // { key: 'id', name: 'ID' },
-    { key: 'item', name: 'Item' },
-    { key: 'quantity', name: 'Quantity' } 
+    { key: 'item', name: 'Item', editable: true},
+    { key: 'quantity', name: 'Quantity', editable: true}, 
     ];
     
-  
-    var rows = this.props.trunk.items.map(function (item) {
-      return {id: item.name, item: item.name, quantity: item.quantity}
-    });
-    
 
-
-
-
-    console.log("ROWS")
-
-    console.log(rows)
-
-
-  
     if (isSignedIn) {
           // return (<Button onClick={this.addItem}>add</Button>);
-        return (<ReactDataGrid
+        return (
+        <ReactDataGrid
             columns={columns}
-            rowGetter={i => rows[i]}
+            rowGetter={i => this.state.rows[i]}
             rowsCount={3}
-            minHeight={150} />
+            minHeight={150} 
+            onGridRowsUpdated={this.onGridRowsUpdated}
+            enableCellSelect={true}
+          />
         );
     } else {
         return (
