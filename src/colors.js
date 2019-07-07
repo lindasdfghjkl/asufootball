@@ -35,6 +35,11 @@ const colors = [
     import: purple
   },
   {
+    id: 'pink',
+    name: 'Pink',
+    import: pink
+  },
+  {
     id: 'deep-purple',
     name: 'Deep Purple',
     import: deepPurple

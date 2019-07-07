@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+
 import red from '@material-ui/core/colors/red';
 import pink from '@material-ui/core/colors/pink';
 import purple from '@material-ui/core/colors/purple';
@@ -19,8 +20,6 @@ import brown from '@material-ui/core/colors/brown';
 import gray from '@material-ui/core/colors/grey';
 import blueGray from '@material-ui/core/colors/blueGrey';
 
-
-
 /* eslint-enable no-unused-vars */
 
 const settings = {
@@ -35,7 +34,7 @@ const settings = {
       name: 'yellow',
       import: yellow
     },
-    type: 'dalightrk'
+    type: 'light'
   },
 
   credentials: {
