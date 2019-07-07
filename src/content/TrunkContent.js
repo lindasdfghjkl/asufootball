@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import Fab from '@material-ui/core/Fab';
+// import Fab from '@material-ui/core/Fab';
 
 import EmptyState from '../layout/EmptyState/EmptyState';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
  
 // import AddTrunkDialog from '../../dialogs/AddTrunkDialog/AddTrunkDialog';
 // import TrunksView from '../../layout/TrunksView';
@@ -57,7 +57,7 @@ class TrunkContent extends Component {
 
   addItem = (event) => {  
     var postData = this.props.trunk;
-    if (postData.items == undefined) {
+    if (postData.items === undefined) {
       postData.items = []
     }
     postData.items.push({name: "item name", quantity: 10});
@@ -110,10 +110,10 @@ class TrunkContent extends Component {
 
   render() {
     // Styling
-    const { classes } = this.props;
+    // const { classes } = this.props;
 
     // Properties
-    const { isSignedIn, title, trunk} = this.props;
+    const { isSignedIn, title} = this.props;
     
     
     const columns = [

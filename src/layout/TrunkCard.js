@@ -3,34 +3,36 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
+// import Box from '@material-ui/core/Box';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import Collapse from '@material-ui/core/Collapse';
-import clsx from 'clsx';
-import Input from '@material-ui/core/Input';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import FilledInput from '@material-ui/core/FilledInput';
-import InputLabel from '@material-ui/core/InputLabel';
+// import Collapse from '@material-ui/core/Collapse';
+// import clsx from 'clsx';
+// import Input from '@material-ui/core/Input';
+// import OutlinedInput from '@material-ui/core/OutlinedInput';
+// import FilledInput from '@material-ui/core/FilledInput';
+// import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
+// import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogActions from '@material-ui/core/DialogActions';
-import QRCode from 'qrcode.react';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+// import Dialog from '@material-ui/core/Dialog';
+// import DialogTitle from '@material-ui/core/DialogTitle';
+// import DialogContent from '@material-ui/core/DialogContent';
+// import DialogContentText from '@material-ui/core/DialogContentText';
+// import DialogActions from '@material-ui/core/DialogActions';
+// import QRCode from 'qrcode.react';
+// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+// eslint-disable-next-line
+import { BrowserRouter as Router, Link } from "react-router-dom";
 
 
 
@@ -133,7 +135,7 @@ class TrunkCard extends Component {
     // Properties
     const {trunk, key} = this.props;
 
-    var {expanded} = this.state.expanded;
+    // var {expanded} = this.state.expanded;
 
 
 
@@ -171,7 +173,11 @@ class TrunkCard extends Component {
                     </Typography>
             </CardContent>
             <CardActions>
-                <Link className={classes.floatRight} to={"/" + trunk.key}>Edit Items</Link>
+              
+                <Link className={classes.floatRight} to={"/" + trunk.key}>
+                  Edit Items
+                </Link>
+           
                 {/* <Button
                   className={clsx(classes.expand, {
                     [classes.expandOpen]: this.state.expanded,
