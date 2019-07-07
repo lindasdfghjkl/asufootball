@@ -46,12 +46,16 @@ class TrunkContent extends Component {
   }
 
   componentDidMount() {
-    var rows = this.props.trunk.items.map(function (item) {
-      return {id: item.name, item: item.name, quantity: item.quantity}
-    });
+    var rows;
+    if (this.props.trunk.items != undefined) {
+        rows = this.props.trunk.items.map(function (item) {
+        return {id: item.name, item: item.name, quantity: item.quantity}
+      });
+    } else {
+      rows = [];
+    }
     this.setState({rows: rows});
     this.onGridRowsUpdated = this.onGridRowsUpdated.bind(this)
-
   }
 
 
