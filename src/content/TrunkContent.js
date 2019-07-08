@@ -148,20 +148,23 @@ class TrunkContent extends Component {
 
     if (isSignedIn) {
         return (
-        <div>
+        <div 
+          style={{width: '90%', marginLeft: '5%'}}
+        
+        >
           <h1>{trunk.name}</h1>
           <Button onClick={this.addRow}>+ ADD ITEM</Button>
           <ReactTable
             data={this.state.data}
-            
             columns={[
               {
                 Header: "Delete",
                 id:'delete',
                 accessor: str => "delete",
                 Cell: (row)=> (
-                <Button onClick={this.deleteRow}>-</Button> 
-                )
+                  <Button onClick={this.deleteRow}>-</Button> 
+                ),
+                maxWidth: 100
               },
               {
                 Header: "Item",
