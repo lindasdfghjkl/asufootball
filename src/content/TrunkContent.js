@@ -60,6 +60,9 @@ class TrunkContent extends Component {
     this.addRow = this.addRow.bind(this);
     this.deleteRow = this.deleteRow.bind(this);
     this.renderStatus = this.renderStatus.bind(this);
+    this.viewQRCode = this.viewQRCode.bind(this);
+    this.createQRCode = this.createQRCode.bind(this);
+
 
   }
 
@@ -68,7 +71,7 @@ class TrunkContent extends Component {
     var data = [];
     if (this.props.trunk.items != undefined) {
       data = this.props.trunk.items.map(function (item) {
-          return {name: item.name, quantity: item.quantity, status: item.status}
+          return {name: item.name, quantity: item.quantity, status: item.status, qr: item.qr}
       });
     } 
     this.setState({data: data});
@@ -127,7 +130,7 @@ class TrunkContent extends Component {
 
   addRow() { 
     var d = this.state.data;
-    d.push({name: '', quantity: '', status: ''});
+    d.push({name: '', quantity: '', status: '', qr: ''});
     this.setState({data: d});
   }
 
@@ -136,6 +139,14 @@ class TrunkContent extends Component {
     data.splice(row.index, 1);
     this.setState({data});
     this.updateDatabase(data);
+  }
+
+  viewQRCode(cellInfo) {
+    return 
+  }
+
+  createQRCode() {
+    return 
   }
 
   render() {
@@ -155,17 +166,9 @@ class TrunkContent extends Component {
           <h1>{trunk.name}</h1>
           <Button onClick={this.addRow}>+ ADD ITEM</Button>
           <ReactTable
+            style={{textAlign: 'center'}}
             data={this.state.data}
             columns={[
-              {
-                Header: "Delete",
-                id:'delete',
-                accessor: str => "delete",
-                Cell: (row)=> (
-                  <Button onClick={this.deleteRow}>-</Button> 
-                ),
-                maxWidth: 100
-              },
               {
                 Header: "Item",
                 accessor: "name",
@@ -180,6 +183,18 @@ class TrunkContent extends Component {
                 Header: "Status",
                 Cell: this.renderStatus
               },
+              {
+                Header: "Actions",
+                id:'delete',
+                accessor: str => "delete",
+                Cell: (row)=> (
+                  <div>
+                    <Button onClick={this.viewQRCode}>print qr</Button> 
+                    <Button onClick={this.deleteRow}>delete</Button> 
+                  </div>
+                ),
+                maxWidth: 300
+              }
             ]}
             minRows={this.state.data.length}
             showPageSizeOptions={false}
