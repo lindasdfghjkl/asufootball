@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import queryString from 'query-string'
 
 // validate.js
 import validate from 'validate.js';
@@ -1066,7 +1067,18 @@ class App extends Component {
     });
   };
 
-
+  getItemRoutes = function() {
+    var objs = []
+    for (var i = 0; i < this.state.trunks.length; i++) {
+      for (var j= 0; j < this.state.trunks[i].items.length; j++) {
+        var url = "/" + this.state.trunks[i].key + "?id=" + this.state.trunks[i].items[j].id
+        objs.push(url)
+      }
+    }
+    var routes = objs.map((obj, key) =>  <Route key={key} exact path={obj} render={() => { console.log(queryString.parse(this.props.location.search).id); return <App />;}} />)
+  
+    return routes;
+  }
 
   render() {
     const {
@@ -1100,25 +1112,10 @@ class App extends Component {
     const { snackbar } = this.state;
 
     var routeComponents = this.state.trunks.map((trunk, key) => <Route key={key} path={"/" + trunk.key} render={() => (<TrunkContent isSignedIn={isSignedIn} trunk={trunk}></TrunkContent>)} />);
+    var itemRouteComponents = this.getItemRoutes();
+    
+    
 
-
-    var itemRouteComponents = () => {
-      var objs = []
-      this.state.trunks.forEach(trunk => {
-        this.state.trunks.items.forEach(item => {
-          var url ="/" + trunk.key + "?id=" + item.id
-          objs.push(
-            {url: url,
-            trunk: trunk.key,
-            id: item.id
-            });
-        });
-      });
-
-      var routes = objs.map((obj, key) => <Route key={key} path={obj} render={() => { alert(obj.id);return <App />;}} />);
-
-      return routes;
-    }
 
     return (
       <Router>
@@ -1150,9 +1147,6 @@ class App extends Component {
                   {routeComponents}
                   {itemRouteComponents}
                   <Route component={NotFoundContent} />
-                  )
-
-                  <Route path="/" render={() => (<h2>hello</h2>)}/>
 
                 </Switch>
 
