@@ -139,7 +139,7 @@ class TrunkContent extends Component {
   }
 
   viewQRCode(cellInfo) {
-    var url = window.location.href;
+    var url = "34.214.162.117:3000/" + this.props.trunk.key; 
     url += "?id=" + this.state.data[cellInfo.index].id;
     return (
         <QR value={url} />

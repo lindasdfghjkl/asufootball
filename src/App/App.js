@@ -1102,13 +1102,21 @@ class App extends Component {
     var routeComponents = this.state.trunks.map((trunk, key) => <Route key={key} path={"/" + trunk.key} render={() => (<TrunkContent isSignedIn={isSignedIn} trunk={trunk}></TrunkContent>)} />);
 
 
-    var itemRouteComponents = function() {
-      var routes = []
+    var itemRouteComponents = () => {
+      var objs = []
       this.state.trunks.forEach(trunk => {
-        this.state.trunks.items.forEach((item, key) => {
-          routes.push(<Route key={key} path={"/" + trunk.key + "?id=" + item.id} render={() => (<h1>{item.name}</h1>)} />)
+        this.state.trunks.items.forEach(item => {
+          var url ="/" + trunk.key + "?id=" + item.id
+          objs.push(
+            {url: url,
+            trunk: trunk.key,
+            id: item.id
+            });
         });
       });
+
+      var routes = objs.map((obj, key) => <Route key={key} path={obj} render={() => { alert(obj.id);return <App />;}} />);
+
       return routes;
     }
 
