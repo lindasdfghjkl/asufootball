@@ -20,6 +20,10 @@ import EmptyState from '../layout/EmptyState/EmptyState';
 
 import MaterialTable from 'material-table';
 
+import ReactTable from "react-table";
+import "react-table/react-table.css";
+import Button from '@material-ui/core/Button';
+
 
 
 
@@ -53,8 +57,14 @@ class TrunkContent extends Component {
         { title: 'Quantity', field: 'quantity' },
       ],
       data: [],
-      fb: global.firebaseApp
     }
+
+    this.fb = global.firebaseApp
+    this.renderEditable = this.renderEditable.bind(this);
+    this.addRow = this.addRow.bind(this);
+    this.deleteRow = this.deleteRow.bind(this);
+
+
   }
 
   
@@ -66,10 +76,29 @@ class TrunkContent extends Component {
       });
     } 
     this.setState({data: data});
-    console.log(data)
     // this.onGridRowsUpdated = this.onGridRowsUpdated.bind(this)
   }
 
+  renderEditable(cellInfo) {
+    return (
+      <div
+        style={{ backgroundColor: "#fafafa" }}
+        contentEditable
+        suppressContentEditableWarning
+        onBlur={e => {
+          const data = [...this.state.data];
+          data[cellInfo.index][cellInfo.column.id] = e.target.innerHTML;
+          this.setState({ data });
+
+
+          this.updateDatabase(data);
+        }}
+        dangerouslySetInnerHTML={{
+          __html: this.state.data[cellInfo.index][cellInfo.column.id]
+        }}
+      />
+    );
+  }
 
   // addItem = (event) => {  
   //   var postData = this.props.trunk;
@@ -125,7 +154,7 @@ class TrunkContent extends Component {
     postData.items = newData;
     var updates = {};
     updates['trunks/' + postData.key] = postData;
-    this.state.fb.database().ref().update(updates, 
+    this.fb.database().ref().update(updates, 
         function(error) {
             if (error) {
                 console.log(error)
@@ -136,6 +165,17 @@ class TrunkContent extends Component {
     );
   } 
 
+  addRow() { 
+    var d = this.state.data;
+    d.push({name: " ", quantity: ' '});
+    this.setState({data: d});
+    console.log(this.state.data)
+  }
+
+  
+  deleteRow = (rowId) => {
+
+  };
 
   render() {
     // Styling
@@ -164,46 +204,90 @@ class TrunkContent extends Component {
           //     onGridRowsUpdated={this.onGridRowsUpdated}
           //     enableCellSelect={true}
           //   />
-        <MaterialTable
-          title={trunk.name}
-          columns={this.state.columns}
-          data={this.state.data}
-          editable={{
-            onRowAdd: newData =>
-              new Promise(resolve => {
-                setTimeout(() => {
-                  resolve();
-                  const data = this.state.data;
-                  data.push(newData);
-                  this.setState({data});
 
-                  this.updateDatabase(data);
-                }, 600);
-              }),
-            onRowUpdate: (newData, oldData) =>
-              new Promise(resolve => {
-                setTimeout(() => {
-                  resolve();
-                  const data = this.state.data;
-                  data[data.indexOf(oldData)] = newData;
-                  this.setState({ data });
+        // <MaterialTable
+        //   title={trunk.name}
+        //   columns={this.state.columns}
+        //   data={this.state.data}
+        //   editable={{
+        //     onRowAdd: newData =>
+        //       new Promise(resolve => {
+        //         setTimeout(() => {
+        //           resolve();
+        //           const data = this.state.data;
+        //           data.push(newData);
+        //           this.setState({data});
 
-                  this.updateDatabase(data);
-                }, 600);
-              }),
-            onRowDelete: oldData =>
-              new Promise(resolve => {
-                setTimeout(() => {
-                  resolve();
-                  const data = this.state.data;
-                  data.splice(data.indexOf(oldData), 1);
-                  this.setState({data});
+        //           this.updateDatabase(data);
+        //         }, 600);
+        //       }),
+        //     onRowUpdate: (newData, oldData) =>
+        //       new Promise(resolve => {
+        //         setTimeout(() => {
+        //           resolve();
+        //           const data = this.state.data;
+        //           data[data.indexOf(oldData)] = newData;
+        //           this.setState({ data });
 
-                  this.updateDatabase(data);
-                }, 600);
-              }),
-          }}
-        />
+        //           this.updateDatabase(data);
+        //         }, 600);
+        //       }),
+        //     onRowDelete: oldData =>
+        //       new Promise(resolve => {
+        //         setTimeout(() => {
+        //           resolve();
+        //           const data = this.state.data;
+        //           data.splice(data.indexOf(oldData), 1);
+        //           this.setState({data});
+
+        //           this.updateDatabase(data);
+        //         }, 600);
+        //       }),
+        //   }}
+        // />
+
+        <div>
+          <Button onClick={this.addRow}>+ ADD ITEM</Button>
+          <ReactTable
+            data={this.state.data}
+            columns={[
+              // {
+              //   Header: "Delete",
+              //   Cell: <Button onClick={this.deleteRow}>-</Button>
+              // },
+
+              {
+                Header: "Delete",
+                id:'delete',
+                accessor: str => "delete",
+            
+                Cell: (row)=> (
+                <Button 
+                      onClick={() => {
+                          let data = this.state.data;
+                          data.splice(row.index, 1);
+                          this.setState({data});
+                          this.updateDatabase(data);
+                        }}>
+                        -
+                </Button> 
+                )
+              },
+              {
+                Header: "Item",
+                accessor: "name",
+                Cell: this.renderEditable
+              },
+              {
+                Header: "Quantity",
+                accessor: "quantity",
+                Cell: this.renderEditable
+              },
+            ]}
+            minRows={this.state.data.length}
+            defaultPageSize={5}
+          />
+      </div>
       )
     } else {
         return (
