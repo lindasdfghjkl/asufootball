@@ -52,18 +52,14 @@ class TrunkContent extends Component {
     super(props);
 
     this.state = {
-      columns: [
-        { title: 'Item', field: 'name' },
-        { title: 'Quantity', field: 'quantity' },
-      ],
-      data: [],
+      data: []
     }
 
     this.fb = global.firebaseApp
     this.renderEditable = this.renderEditable.bind(this);
     this.addRow = this.addRow.bind(this);
     this.deleteRow = this.deleteRow.bind(this);
-
+    this.renderStatus = this.renderStatus.bind(this);
 
   }
 
@@ -72,82 +68,11 @@ class TrunkContent extends Component {
     var data = [];
     if (this.props.trunk.items != undefined) {
       data = this.props.trunk.items.map(function (item) {
-          return {name: item.name, quantity: item.quantity}
+          return {name: item.name, quantity: item.quantity, status: item.status}
       });
     } 
     this.setState({data: data});
-    // this.onGridRowsUpdated = this.onGridRowsUpdated.bind(this)
   }
-
-  renderEditable(cellInfo) {
-    return (
-      <div
-        style={{ backgroundColor: "#fafafa" }}
-        contentEditable
-        suppressContentEditableWarning
-        onBlur={e => {
-          const data = [...this.state.data];
-          data[cellInfo.index][cellInfo.column.id] = e.target.innerHTML;
-          this.setState({ data });
-
-
-          this.updateDatabase(data);
-        }}
-        dangerouslySetInnerHTML={{
-          __html: this.state.data[cellInfo.index][cellInfo.column.id]
-        }}
-      />
-    );
-  }
-
-  // addItem = (event) => {  
-  //   var postData = this.props.trunk;
-  //   if (postData.items === undefined) {
-  //     postData.items = []
-  //   }
-  //   postData.items.push({name: "item name", quantity: 10});
-    
-  //   var updates = {};
-  //   updates['trunks/' + postData.key] = postData;
-
-  //   global.firebaseApp.database().ref().update(updates, 
-  //       function(error) {
-  //           if (error) {
-  //               console.log(error)
-  //           } else {
-  //               console.log("Success")
-  //           }
-  //       }
-  //   );
-  // }
-
-  // onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
-  //   this.setState(state => {
-  //     const rows = state.rows.slice();
-  //     for (let i = fromRow; i <= toRow; i++) {
-  //       rows[i] = { ...rows[i], ...updated };
-  //     }
-
-  //     var updatedItems = rows.map(function (row) {
-  //       return {name: row.item, quantity: row.quantity}
-  //     });
-  //     var postData = this.props.trunk;
-  //     postData.items =  updatedItems;
-  //     var updates = {};
-  //     updates['trunks/' + postData.key] = postData;
-  //     global.firebaseApp.database().ref().update(updates, 
-  //         function(error) {
-  //             if (error) {
-  //                 console.log(error)
-  //             } else {
-  //                 console.log("Success")
-  //             }
-  //         }
-  //     );
-
-  //     return { rows };
-  //   });
-  // };
 
   updateDatabase(newData) {
     var postData = this.props.trunk;
@@ -165,17 +90,53 @@ class TrunkContent extends Component {
     );
   } 
 
-  addRow() { 
-    var d = this.state.data;
-    d.push({name: " ", quantity: ' '});
-    this.setState({data: d});
-    console.log(this.state.data)
+  renderEditable(cellInfo) {
+    return (
+      <div
+        style={{ backgroundColor: "#fafafa" }}
+        contentEditable
+        suppressContentEditableWarning
+        onBlur={e => {
+          const data = [...this.state.data];
+          data[cellInfo.index][cellInfo.column.id] = e.target.innerHTML;
+          this.setState({ data });
+          this.updateDatabase(data);
+        }}
+        dangerouslySetInnerHTML={{
+          __html: this.state.data[cellInfo.index][cellInfo.column.id]
+        }}
+      />
+    );
   }
 
-  
-  deleteRow = (rowId) => {
+  renderStatus(cellInfo) {
+    return (
+        <select 
+          value={this.state.data[cellInfo.index].status} 
+          onChange={(e) => {
+            var data = this.state.data;
+            data[cellInfo.index].status = e.target.value;
+            this.setState({data});
+            this.updateDatabase(data);
+          }}>
+          <option value="0">Not loaded</option>
+          <option value="1">Loaded</option>
+          </select>
+    );
+  }
 
-  };
+  addRow() { 
+    var d = this.state.data;
+    d.push({name: '', quantity: '', status: ''});
+    this.setState({data: d});
+  }
+
+  deleteRow(row) {
+    let data = this.state.data;
+    data.splice(row.index, 1);
+    this.setState({data});
+    this.updateDatabase(data);
+  }
 
   render() {
     // Styling
@@ -184,93 +145,22 @@ class TrunkContent extends Component {
     // Properties
     const { isSignedIn, title, trunk} = this.props;
     
-    
-    // const columns = [
-    // // { key: 'id', name: 'ID' },
-    // { key: 'item', name: 'Item', editable: true},
-    // { key: 'quantity', name: 'Quantity', editable: true}, 
-    // ];
-    
-
-    
 
     if (isSignedIn) {
         return (
-          // <ReactDataGrid
-          //     columns={columns}
-          //     rowGetter={i => this.state.rows[i]}
-          //     rowsCount={3}
-          //     minHeight={150} 
-          //     onGridRowsUpdated={this.onGridRowsUpdated}
-          //     enableCellSelect={true}
-          //   />
-
-        // <MaterialTable
-        //   title={trunk.name}
-        //   columns={this.state.columns}
-        //   data={this.state.data}
-        //   editable={{
-        //     onRowAdd: newData =>
-        //       new Promise(resolve => {
-        //         setTimeout(() => {
-        //           resolve();
-        //           const data = this.state.data;
-        //           data.push(newData);
-        //           this.setState({data});
-
-        //           this.updateDatabase(data);
-        //         }, 600);
-        //       }),
-        //     onRowUpdate: (newData, oldData) =>
-        //       new Promise(resolve => {
-        //         setTimeout(() => {
-        //           resolve();
-        //           const data = this.state.data;
-        //           data[data.indexOf(oldData)] = newData;
-        //           this.setState({ data });
-
-        //           this.updateDatabase(data);
-        //         }, 600);
-        //       }),
-        //     onRowDelete: oldData =>
-        //       new Promise(resolve => {
-        //         setTimeout(() => {
-        //           resolve();
-        //           const data = this.state.data;
-        //           data.splice(data.indexOf(oldData), 1);
-        //           this.setState({data});
-
-        //           this.updateDatabase(data);
-        //         }, 600);
-        //       }),
-        //   }}
-        // />
-
         <div>
+          <h1>{trunk.name}</h1>
           <Button onClick={this.addRow}>+ ADD ITEM</Button>
           <ReactTable
             data={this.state.data}
+            
             columns={[
-              // {
-              //   Header: "Delete",
-              //   Cell: <Button onClick={this.deleteRow}>-</Button>
-              // },
-
               {
                 Header: "Delete",
                 id:'delete',
                 accessor: str => "delete",
-            
                 Cell: (row)=> (
-                <Button 
-                      onClick={() => {
-                          let data = this.state.data;
-                          data.splice(row.index, 1);
-                          this.setState({data});
-                          this.updateDatabase(data);
-                        }}>
-                        -
-                </Button> 
+                <Button onClick={this.deleteRow}>-</Button> 
                 )
               },
               {
@@ -283,9 +173,14 @@ class TrunkContent extends Component {
                 accessor: "quantity",
                 Cell: this.renderEditable
               },
+              {
+                Header: "Status",
+                Cell: this.renderStatus
+              },
             ]}
             minRows={this.state.data.length}
-            defaultPageSize={5}
+            showPageSizeOptions={false}
+            sortable={true}
           />
       </div>
       )
