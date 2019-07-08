@@ -1101,6 +1101,17 @@ class App extends Component {
 
     var routeComponents = this.state.trunks.map((trunk, key) => <Route key={key} path={"/" + trunk.key} render={() => (<TrunkContent isSignedIn={isSignedIn} trunk={trunk}></TrunkContent>)} />);
 
+
+    var itemRouteComponents = function() {
+      var routes = []
+      this.state.trunks.forEach(trunk => {
+        this.state.trunks.items.forEach((item, key) => {
+          routes.push(<Route key={key} path={"/" + trunk.key + "?id=" + item.id} render={() => (<h1>{item.name}</h1>)} />)
+        });
+      });
+      return routes;
+    }
+
     return (
       <Router>
         <MuiThemeProvider theme={theme}>
@@ -1129,6 +1140,7 @@ class App extends Component {
                 <Switch>
                   <Route path="/" exact render={() => (<HomeContent isSignedIn={isSignedIn} title={settings.title}/>) } />
                   {routeComponents}
+                  {itemRouteComponents}
                   <Route component={NotFoundContent} />
                   )
 

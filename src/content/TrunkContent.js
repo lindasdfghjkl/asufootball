@@ -14,15 +14,11 @@ import EmptyState from '../layout/EmptyState/EmptyState';
 // import TrunkCard from '../../layout/TrunkCard';
 
 
-
-// import ReactDataGrid from 'react-data-grid';
-
-
-import MaterialTable from 'material-table';
-
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 import Button from '@material-ui/core/Button';
+
+import QR from 'qrcode.react';
 
 
 
@@ -62,16 +58,16 @@ class TrunkContent extends Component {
     this.renderStatus = this.renderStatus.bind(this);
     this.viewQRCode = this.viewQRCode.bind(this);
     this.createQRCode = this.createQRCode.bind(this);
-
+    this.getID = this.getID.bind(this);
 
   }
 
   
   componentDidMount() {
     var data = [];
-    if (this.props.trunk.items != undefined) {
+    if (this.props.trunk.items !== undefined) {
       data = this.props.trunk.items.map(function (item) {
-          return {name: item.name, quantity: item.quantity, status: item.status, qr: item.qr}
+          return {id: item.id, name: item.name, quantity: item.quantity, status: item.status, qr: item.qr}
       });
     } 
     this.setState({data: data});
@@ -101,6 +97,7 @@ class TrunkContent extends Component {
         suppressContentEditableWarning
         onBlur={e => {
           const data = [...this.state.data];
+        //  data[cellInfo.index].id = cellInfo.index;
           data[cellInfo.index][cellInfo.column.id] = e.target.innerHTML;
           this.setState({ data });
           this.updateDatabase(data);
@@ -130,7 +127,7 @@ class TrunkContent extends Component {
 
   addRow() { 
     var d = this.state.data;
-    d.push({name: '', quantity: '', status: '', qr: ''});
+    d.push({id: this.state.data.length, name: '', quantity: '', status: '', qr: ''});
     this.setState({data: d});
   }
 
@@ -142,16 +139,26 @@ class TrunkContent extends Component {
   }
 
   viewQRCode(cellInfo) {
-    return 
+    var url = window.location.href;
+    url += "?id=" + this.state.data[cellInfo.index].id;
+    return (
+        <QR value={url} />
+    )
   }
 
   createQRCode() {
     return 
   }
 
+  getID(cellInfo) {
+    return (
+      this.state.data[cellInfo.index].id
+    )
+  }
+
   render() {
     // Styling
-    const { classes } = this.props;
+    // const { classes } = this.props;
 
     // Properties
     const { isSignedIn, title, trunk} = this.props;
@@ -169,6 +176,16 @@ class TrunkContent extends Component {
             style={{textAlign: 'center'}}
             data={this.state.data}
             columns={[
+              {
+                Header: "QR",
+                // accessor: "id",
+                Cell: this.viewQRCode
+              },
+              {
+                Header: "ID",
+                accessor: "id",
+                // Cell: this.getID
+              },
               {
                 Header: "Item",
                 accessor: "name",
