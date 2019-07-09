@@ -133,11 +133,7 @@ class TrunkContent extends Component {
   }
 
   getUsername(user) {
-    if (user.displayName === undefined || user.displayName === null) {
-      return this.props.user.email;
-    } else {
-      return this.props.user.displayName;
-    }
+    return user.displayName || user.email
   }
 
   addRow() { 
@@ -196,10 +192,10 @@ class TrunkContent extends Component {
 
   render() {
     // Styling
-    const { classes } = this.props;
+    // const { classes } = this.props;
 
     // Properties
-    const { isSignedIn, title, trunk, username} = this.props;
+    const { isSignedIn, title, trunk} = this.props;
     
 
     if (isSignedIn) {
