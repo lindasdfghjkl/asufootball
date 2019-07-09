@@ -56,8 +56,6 @@ class TrunkContent extends Component {
     this.addRow = this.addRow.bind(this);
     this.deleteRow = this.deleteRow.bind(this);
     this.renderStatus = this.renderStatus.bind(this);
-    this.viewQRCode = this.viewQRCode.bind(this);
-    this.createQRCode = this.createQRCode.bind(this);
     this.getID = this.getID.bind(this);
     this.showActions = this.showActions.bind(this);
 
@@ -93,7 +91,7 @@ class TrunkContent extends Component {
   renderEditable(cellInfo) {
     return (
       <div
-        style={{ backgroundColor: "#fafafa" }}
+        style={{ 'padding': '5px' }}
         contentEditable
         suppressContentEditableWarning
         onBlur={e => {
@@ -137,17 +135,6 @@ class TrunkContent extends Component {
 
   }
 
-  viewQRCode(cellInfo) {
-    var url = "34.214.162.117:3000/" + this.props.trunk.key; 
-    url += "?id=" + this.state.data[cellInfo.index].id;
-    return (
-        <QR value={url} />
-    )
-  }
-
-  createQRCode() {
-    return 
-  }
 
   getID(items) {
     var ids = [];
@@ -165,14 +152,20 @@ class TrunkContent extends Component {
   showActions(cellInfo) {
     return (
       <div>
-        <Button onClick={this.viewQRCode}>print qr</Button> 
+        <Button onClick={ (e) => {
+            var url = "34.214.162.117:3000/" + this.props.trunk.key; 
+            url += "?id=" + this.state.data[cellInfo.index].id;
+            return ( <QR value={url} /> )
+        }}>print qr</Button> 
+
         <Button onClick={ (e) => {
               let data = this.state.data;
               data.splice(cellInfo.index, 1);
               this.setState({data});
               this.updateDatabase(data);
-            }
-        }>delete</Button> 
+            }}>
+              delete
+            </Button> 
       </div>
     )
   }
@@ -204,7 +197,8 @@ class TrunkContent extends Component {
               {
                 Header: "ID",
                 accessor: "id",
-                // Cell: this.getID
+                Cell: (row) => (<div style={{'color':'rgb(50, 50, 50)'}}>{this.state.data[row.index].id}</div>),
+                maxWidth: 100,
               },
               {
                 Header: "Item",
