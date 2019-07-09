@@ -59,6 +59,7 @@ class TrunkContent extends Component {
     this.viewQRCode = this.viewQRCode.bind(this);
     this.createQRCode = this.createQRCode.bind(this);
     this.getID = this.getID.bind(this);
+    this.showActions = this.showActions.bind(this);
 
   }
 
@@ -67,7 +68,7 @@ class TrunkContent extends Component {
     var data = [];
     if (this.props.trunk.items !== undefined) {
       data = this.props.trunk.items.map(function (item) {
-          return {id: item.id, name: item.name, quantity: item.quantity, status: item.status, qr: item.qr}
+          return {id: item.id, name: item.name, quantity: item.quantity, status: item.status}
       });
     } 
     this.setState({data: data});
@@ -119,23 +120,21 @@ class TrunkContent extends Component {
             this.setState({data});
             this.updateDatabase(data);
           }}>
-          <option value="0">Not loaded</option>
-          <option value="1">Loaded</option>
+            <option value="0">Not loaded</option>
+            <option value="1">Loaded</option>
           </select>
     );
   }
 
   addRow() { 
     var d = this.state.data;
-    d.push({id: this.state.data.length, name: '', quantity: '', status: '', qr: ''});
+    var id = this.getID(d);
+    d.push({id: id, name: '', quantity: '', status: ''});
     this.setState({data: d});
   }
 
   deleteRow(row) {
-    let data = this.state.data;
-    data.splice(row.index, 1);
-    this.setState({data});
-    this.updateDatabase(data);
+
   }
 
   viewQRCode(cellInfo) {
@@ -150,12 +149,33 @@ class TrunkContent extends Component {
     return 
   }
 
-  getID(cellInfo) {
-    return (
-      this.state.data[cellInfo.index].id
-    )
+  getID(items) {
+    var ids = [];
+    items.forEach(item => {
+      ids.push(item.id);
+    });
+    if (ids.length === 0) {
+      return 0;
+    } else {
+      var id =  Math.max(...ids) + 1;
+      return id;
+    }
   }
 
+  showActions(cellInfo) {
+    return (
+      <div>
+        <Button onClick={this.viewQRCode}>print qr</Button> 
+        <Button onClick={ (e) => {
+              let data = this.state.data;
+              data.splice(cellInfo.index, 1);
+              this.setState({data});
+              this.updateDatabase(data);
+            }
+        }>delete</Button> 
+      </div>
+    )
+  }
   render() {
     // Styling
     // const { classes } = this.props;
@@ -176,11 +196,11 @@ class TrunkContent extends Component {
             style={{textAlign: 'center'}}
             data={this.state.data}
             columns={[
-              {
-                Header: "QR",
-                // accessor: "id",
-                Cell: this.viewQRCode
-              },
+              // {
+              //   Header: "QR",
+              //   // accessor: "id",
+              //   Cell: this.viewQRCode
+              // },
               {
                 Header: "ID",
                 accessor: "id",
@@ -202,14 +222,7 @@ class TrunkContent extends Component {
               },
               {
                 Header: "Actions",
-                id:'delete',
-                accessor: str => "delete",
-                Cell: (row)=> (
-                  <div>
-                    <Button onClick={this.viewQRCode}>print qr</Button> 
-                    <Button onClick={this.deleteRow}>delete</Button> 
-                  </div>
-                ),
+                Cell: this.showActions,
                 maxWidth: 300
               }
             ]}

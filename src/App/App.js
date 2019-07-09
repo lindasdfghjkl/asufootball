@@ -146,6 +146,7 @@ class App extends Component {
     };
 
     this.trunksRef = this.getRef().child('trunks').orderByChild('name');
+    this.location = window.location;
   }
 
   getRef() {
@@ -1068,15 +1069,16 @@ class App extends Component {
   };
 
   getItemRoutes = function() {
-    var objs = []
+    var urls = []
     for (var i = 0; i < this.state.trunks.length; i++) {
       for (var j= 0; j < this.state.trunks[i].items.length; j++) {
         var url = "/" + this.state.trunks[i].key + "?id=" + this.state.trunks[i].items[j].id
-        objs.push(url)
+        urls.push(url)
       }
     }
-    var routes = objs.map((obj, key) =>  <Route key={key} exact path={obj} render={() => { console.log(queryString.parse(this.props.location.search).id); return <App />;}} />)
-  
+    var id = queryString.parse(this.location.search).id;
+    var routes = urls.map((url, key) =>  <Route key={key} exact path={url} render={() => (<NotFoundContent isSignedIn={true} title={id}/>) } />)
+    
     return routes;
   }
 
@@ -1112,7 +1114,7 @@ class App extends Component {
     const { snackbar } = this.state;
 
     var routeComponents = this.state.trunks.map((trunk, key) => <Route key={key} path={"/" + trunk.key} render={() => (<TrunkContent isSignedIn={isSignedIn} trunk={trunk}></TrunkContent>)} />);
-    var itemRouteComponents = this.getItemRoutes();
+    // var itemRouteComponents = this.getItemRoutes();
     
     
 
@@ -1145,7 +1147,7 @@ class App extends Component {
                 <Switch>
                   <Route path="/" exact render={() => (<HomeContent isSignedIn={isSignedIn} title={settings.title}/>) } />
                   {routeComponents}
-                  {itemRouteComponents}
+                  {/* {itemRouteComponents} */}
                   <Route component={NotFoundContent} />
 
                 </Switch>
