@@ -1113,7 +1113,7 @@ class App extends Component {
 
     const { snackbar } = this.state;
 
-    var routeComponents = this.state.trunks.map((trunk, key) => <Route key={key} path={"/" + trunk.key} render={() => (<TrunkContent isSignedIn={isSignedIn} trunk={trunk}></TrunkContent>)} />);
+    var routeComponents = this.state.trunks.map((trunk, key) => <Route key={key} path={"/" + trunk.key} render={() => (<TrunkContent isSignedIn={isSignedIn} user={user} trunk={trunk}></TrunkContent>)} />);
     // var itemRouteComponents = this.getItemRoutes();
     
     

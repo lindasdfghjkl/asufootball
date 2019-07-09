@@ -54,11 +54,9 @@ class TrunkContent extends Component {
     this.fb = global.firebaseApp
     this.renderEditable = this.renderEditable.bind(this);
     this.addRow = this.addRow.bind(this);
-    this.deleteRow = this.deleteRow.bind(this);
     this.renderStatus = this.renderStatus.bind(this);
     this.getID = this.getID.bind(this);
     this.showActions = this.showActions.bind(this);
-
   }
 
   
@@ -66,7 +64,14 @@ class TrunkContent extends Component {
     var data = [];
     if (this.props.trunk.items !== undefined) {
       data = this.props.trunk.items.map(function (item) {
-          return {id: item.id, name: item.name, quantity: item.quantity, status: item.status}
+          return {
+                  id: item.id, 
+                  name: item.name, 
+                  quantity: item.quantity, 
+                  status: item.status, 
+                  user: item.user,
+                  date: item.date
+                }
       });
     } 
     this.setState({data: data});
@@ -91,12 +96,13 @@ class TrunkContent extends Component {
   renderEditable(cellInfo) {
     return (
       <div
-        style={{ 'padding': '5px' }}
+        style={{ 'padding': '5px'}}
         contentEditable
         suppressContentEditableWarning
         onBlur={e => {
           const data = [...this.state.data];
-        //  data[cellInfo.index].id = cellInfo.index;
+          data[cellInfo.index].date = Date.now();
+          data[cellInfo.index].user = this.getUsername(this.props.user);
           data[cellInfo.index][cellInfo.column.id] = e.target.innerHTML;
           this.setState({ data });
           this.updateDatabase(data);
@@ -114,6 +120,8 @@ class TrunkContent extends Component {
           value={this.state.data[cellInfo.index].status} 
           onChange={(e) => {
             var data = this.state.data;
+            data[cellInfo.index].date = Date.now();
+            data[cellInfo.index].user = this.getUsername(this.props.user);
             data[cellInfo.index].status = e.target.value;
             this.setState({data});
             this.updateDatabase(data);
@@ -124,15 +132,20 @@ class TrunkContent extends Component {
     );
   }
 
+  getUsername(user) {
+    if (user.displayName === undefined || user.displayName === null) {
+      return this.props.user.email;
+    } else {
+      return this.props.user.displayName;
+    }
+  }
+
   addRow() { 
     var d = this.state.data;
     var id = this.getID(d);
-    d.push({id: id, name: '', quantity: '', status: ''});
+    var user = this.getUsername(this.props.user);
+    d.push({id: id, name: '', quantity: '', status: '', user: user, date: Date.now()});
     this.setState({data: d});
-  }
-
-  deleteRow(row) {
-
   }
 
 
@@ -169,36 +182,48 @@ class TrunkContent extends Component {
       </div>
     )
   }
+
+
+  formatDate(datenow){
+    var date = new Date(datenow);
+    var options = {
+            year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric'
+        };
+    var result = date.toLocaleDateString('en', options);
+    return result;
+}
+
+
   render() {
     // Styling
-    // const { classes } = this.props;
+    const { classes } = this.props;
 
     // Properties
-    const { isSignedIn, title, trunk} = this.props;
+    const { isSignedIn, title, trunk, username} = this.props;
     
 
     if (isSignedIn) {
         return (
-        <div 
-          style={{width: '90%', marginLeft: '5%'}}
-        
-        >
+        <div style={{width: '90%', marginLeft: '5%'}}>
           <h1>{trunk.name}</h1>
           <Button onClick={this.addRow}>+ ADD ITEM</Button>
           <ReactTable
+            className='-highlight'
             style={{textAlign: 'center'}}
             data={this.state.data}
             columns={[
-              // {
-              //   Header: "QR",
-              //   // accessor: "id",
-              //   Cell: this.viewQRCode
-              // },
               {
                 Header: "ID",
                 accessor: "id",
-                Cell: (row) => (<div style={{'color':'rgb(50, 50, 50)'}}>{this.state.data[row.index].id}</div>),
+                Cell: (row) => (<div>{this.state.data[row.index].id}</div>),
                 maxWidth: 100,
+                // getProps: (column) => {
+                //   return {
+                //       style: {
+                //           background: 'rgb(230, 230, 235)',
+                //       },
+                //   };
+                // },
               },
               {
                 Header: "Item",
@@ -218,6 +243,19 @@ class TrunkContent extends Component {
                 Header: "Actions",
                 Cell: this.showActions,
                 maxWidth: 300
+              },
+              {
+                Header: "Last Modified",
+                accessor: 'date',
+                Cell: (row) => (<div>{this.formatDate(this.state.data[row.index].date)}<br/>{this.state.data[row.index].user}</div>),
+                maxWidth: 300,
+                getProps: (column) => {
+                  return {
+                      style: {
+                          fontSize: '9pt'
+                      },
+                  };
+                },
               }
             ]}
             minRows={this.state.data.length}
@@ -240,8 +278,9 @@ class TrunkContent extends Component {
 TrunkContent.propTypes = {
   classes: PropTypes.object.isRequired,
   isSignedIn: PropTypes.bool.isRequired,
+  user: PropTypes.object.isRequired,
   title: PropTypes.string,
-  trunk: PropTypes.object.isRequired
+  trunk: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(TrunkContent);
