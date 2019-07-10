@@ -65,7 +65,7 @@ class TrunkContent extends Component {
 
     setInterval(() => {   
         this.updateTableData();
-     }, 10000);
+     }, 3000);
   }
 
   updateTableData(){
@@ -153,6 +153,7 @@ class TrunkContent extends Component {
     var user = this.getUsername(this.props.user);
     d.push({id: id, name: '', quantity: '', status: '', user: user, date: Date.now()});
     this.setState({data: d});
+    this.updateDatabase(d);
   }
 
 
