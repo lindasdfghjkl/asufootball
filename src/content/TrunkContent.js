@@ -48,7 +48,7 @@ class TrunkContent extends Component {
     super(props);
 
     this.state = {
-      data: []
+      data: [],
     }
 
     this.fb = global.firebaseApp
@@ -60,9 +60,15 @@ class TrunkContent extends Component {
   }
 
   
-  componentDidMount() {
-    setInterval(() => { 
+  componentWillMount() {
+    this.updateTableData();
 
+    setInterval(() => {   
+        this.updateTableData();
+     }, 10000);
+  }
+
+  updateTableData(){
       var data = [];
       if (this.props.trunk.items !== undefined) {
         data = this.props.trunk.items.map(function (item) {
@@ -77,10 +83,6 @@ class TrunkContent extends Component {
         });
       } 
       this.setState({data: data});
-
-     }, 3000);
-
-   
   }
 
   updateDatabase(newData) {
@@ -111,6 +113,7 @@ class TrunkContent extends Component {
           data[cellInfo.index].user = this.getUsername(this.props.user);
           data[cellInfo.index][cellInfo.column.id] = e.target.innerHTML;
           this.setState({ data });
+          this.props.trunk.items = data;
           this.updateDatabase(data);
         }}
         dangerouslySetInnerHTML={{
@@ -130,7 +133,9 @@ class TrunkContent extends Component {
             data[cellInfo.index].user = this.getUsername(this.props.user);
             data[cellInfo.index].status = e.target.value;
             this.setState({data});
+            this.props.trunk.items = data;
             this.updateDatabase(data);
+
           }}>
             <option value="0">Not loaded</option>
             <option value="1">Loaded</option>
