@@ -61,20 +61,26 @@ class TrunkContent extends Component {
 
   
   componentDidMount() {
-    var data = [];
-    if (this.props.trunk.items !== undefined) {
-      data = this.props.trunk.items.map(function (item) {
-          return {
-                  id: item.id, 
-                  name: item.name, 
-                  quantity: item.quantity, 
-                  status: item.status, 
-                  user: item.user,
-                  date: item.date
-                }
-      });
-    } 
-    this.setState({data: data});
+    setInterval(() => { 
+
+      var data = [];
+      if (this.props.trunk.items !== undefined) {
+        data = this.props.trunk.items.map(function (item) {
+            return {
+                    id: item.id, 
+                    name: item.name, 
+                    quantity: item.quantity, 
+                    status: item.status, 
+                    user: item.user,
+                    date: item.date
+                  }
+        });
+      } 
+      this.setState({data: data});
+
+     }, 3000);
+
+   
   }
 
   updateDatabase(newData) {
