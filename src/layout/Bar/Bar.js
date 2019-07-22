@@ -15,10 +15,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import PersonIcon from '@material-ui/icons/Person';
 
+import Link from '@material-ui/core/Link';
+import { withTheme } from '@material-ui/styles';
+
 const styles = (theme) => ({
   signUpButton: {
     marginRight: theme.spacing(1)
-  }
+  },
 });
 
 class Bar extends Component {
@@ -75,7 +78,7 @@ class Bar extends Component {
     return (
       <AppBar color="primary" position="static">
         <Toolbar variant="regular">
-          <Typography style={{ flexGrow: 1 }} color="inherit" variant="h6">{title}</Typography>
+          <Typography style={{ flexGrow: 1 }} variant="h6"><Link style={{color:'white'}} href="/">{title}</Link></Typography>
 
           {isSignedIn &&
             <React.Fragment>
