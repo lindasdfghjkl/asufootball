@@ -12,7 +12,7 @@
     "material-ui-table-edit": "^3.0.3",
     "mdbreact": "^4.17.0",
     "mdi-material-ui": "^6.1.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "numeral": "^2.0.6",
     "qrcode.react": "^0.9.3",
     "query-string": "^6.8.1",
